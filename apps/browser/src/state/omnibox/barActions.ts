@@ -9,6 +9,7 @@ import { commandBarTitle, commandSymbol } from "../commands/commandCatalog";
 import { menuBarRevision, shortcutHint } from "../commands/commandShortcuts";
 import type { Tab } from "../browser/types";
 import { organizeActions } from "./organizeActions";
+import { canToggleDeveloperModeFor } from "../site/developerMode";
 import { muteState, muteTitle, siteMuteTitle } from "../tabs/mute";
 
 type Context = { s: BrowserState; windowId: string; tab: Tab | undefined };
@@ -19,7 +20,7 @@ type ActionDef = {
   title?: (c: Context) => string;
   icon?: string;
   keywords?: string[];
-  needs?: "page" | "tab" | "profiles" | "pins";
+  needs?: "page" | "tab" | "profiles" | "pins" | "devSite";
 };
 
 const page = "page" as const;
@@ -62,6 +63,7 @@ const DEFS: ActionDef[] = [
     keywords: ["mute site", "unmute site", "silence site"],
     needs: page,
   },
+  { command: "toggleDeveloperMode", keywords: ["developer mode", "dev mode", "localhost"], needs: "devSite" },
   { command: "copyUrl", keywords: ["copy link"], needs: page },
   { command: "copyUrlAsMarkdown", keywords: ["markdown link"], needs: page },
   { command: "findInPage", needs: page },
@@ -106,6 +108,7 @@ export function barActions(s: BrowserState, windowId: string): CommandAction[] {
   for (const d of DEFS) {
     if (d.needs === "page" && !tab?.url) continue;
     if (d.needs === "tab" && !tab) continue;
+    if (d.needs === "devSite" && (w?.kind !== "main" || !canToggleDeveloperModeFor(tab))) continue;
     if (d.needs === "profiles" && w?.kind === "private") continue;
     if (d.needs === "pins" && !canTidyPins(s, windowId)) continue;
     if (hidesBookmarkCommand(s.settings, d.command)) continue;

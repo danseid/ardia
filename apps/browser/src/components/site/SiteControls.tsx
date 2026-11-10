@@ -37,6 +37,8 @@ import { TranslateRows } from "./TranslateControls";
 import { ZoomStepper } from "./ZoomControls";
 import { blockerLabel, choiceTitle, featuredPermissions, permissionValue, readSiteSettings, setSitePermission, sitePermissionsFor, type SitePermission } from "../../state/site/siteControls";
 import { isWebPageUrl } from "../../lib/url";
+import { useAlwaysHardReload, useCanToggleDeveloperMode, useDeveloperModeOn } from "../../state/site/hooks";
+import { setAlwaysHardReload, setDeveloperMode } from "../../state/site/developerModeActions";
 
 type Expanded = "connection" | "more" | null;
 type Blocker = { enabled: boolean; allowed: boolean };
@@ -82,6 +84,9 @@ function SiteControlsPanel({
   const pageEngine = usePageEngine(tabId);
   const webkitPage = pageEngine === "webkit";
   const permissionList = sitePermissionsFor(pageEngine);
+  const developerMode = useDeveloperModeOn(tabId);
+  const canToggleDeveloperMode = useCanToggleDeveloperMode(tabId);
+  const hardReload = useAlwaysHardReload(tabId);
   const sound = { siteMuted: useMuteState(tabId) === "site", soundBlocked: !webkitPage && settings?.sound?.value === "block" };
   const engineRule = useEngineRule(url);
   const recommendedEngine = useRecommendedEngine(url);
@@ -278,6 +283,12 @@ function SiteControlsPanel({
                 {otherPermissions.length ? <MenuSeparator /> : null}
                 <MenuRow icon="trash" title="Clear Cookies and Site Data…" detail={cleared ?? undefined} onPress={() => void clearData()} />
               </>
+            ) : null}
+            {canToggleDeveloperMode ? (
+              <MenuRow icon="hammer" title="Developer Mode" accessory={<Toggle look="panel" value={developerMode} onChange={(v) => setDeveloperMode(tabId, v)} />} />
+            ) : null}
+            {canToggleDeveloperMode && developerMode ? (
+              <MenuRow icon="arrow.clockwise" title="Always Hard Reload" accessory={<Toggle look="panel" value={hardReload} onChange={(v) => setAlwaysHardReload(tabId, v)} />} />
             ) : null}
             <MenuRow
               icon="text.alignleft"

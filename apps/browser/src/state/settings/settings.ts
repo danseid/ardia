@@ -21,6 +21,7 @@ import { isFields, isString, isStringList } from "../../lib/decode";
 import type { SavedObject } from "../../lib/savedDocument";
 import type { JsonSchema } from "../../lib/jsonSchema";
 import { PROVIDERS_SCHEMA } from "../omnibox/providerSchema";
+import { DEVELOPER_ENVIRONMENTS_SCHEMA, DEVELOPER_MODE_SCHEMA, isDeveloperEnvironments, isDeveloperMode, NO_DEVELOPER_MODE, type DeveloperMode, type DeveloperModeEnvironments } from "../site/developerMode";
 
 export const DEFAULT_PROFILE_ID = "default";
 
@@ -96,6 +97,8 @@ export const SETTING_SPECS = {
   autoGroupMeetingTabs: flag(true, SYNCED),
   cleanUpInactiveTabsAfterMinutes: shaped<number | null>(null, (v) => v === null || isWidth(v), { type: ["number", "null"], exclusiveMinimum: 0 }, SYNCED),
   mutedSites: shaped<string[]>([], isStringList, STRING_LIST, SYNCED),
+  developerMode: shaped<DeveloperMode>(NO_DEVELOPER_MODE, isDeveloperMode, DEVELOPER_MODE_SCHEMA, SYNCED),
+  developerModeEnvironments: shaped<DeveloperModeEnvironments>({}, isDeveloperEnvironments, DEVELOPER_ENVIRONMENTS_SCHEMA),
   neverTranslateSites: shaped<Record<string, string[]>>({}, (v) => isRecordOf(v, isStringList), recordOf(STRING_LIST)),
   autoPictureInPicture: flag(true, SYNCED),
   commandScrollZoom: flag(true, SYNCED),

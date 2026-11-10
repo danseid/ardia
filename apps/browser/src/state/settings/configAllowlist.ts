@@ -12,12 +12,12 @@ export const CONFIG_SETTING_KEYS: readonly SettingKey[] = [
   "memorySaverMode", "loadProfilesWhenOpened", "keepActiveSites", "extensionSidePanelWidth", "showFullUrl", "showBookmarks", "bookmarksBar", "bookmarksBarSize",
   "hideBookmarksBarImport", "appearance", "addressBar", "compactToolbar", "pageFrame", "commandBarPlacement", "spacesFollowAppearance", "adaptTextToColor",
   "profileSwitcherIcons", "shortcuts", "openLinksInLittleArdia", "littleArdiaOpensNewTabLinks", "littleArdiaSize",
-  "omniboxProviders", "launchActions",
+  "omniboxProviders", "launchActions", "developerModeEnvironments",
 ];
 
 export const CONFIG_EXCLUDED_KEYS: readonly SettingKey[] = [
   "customSearchUrl", "customSearchEngines", "extensionSearchEngines", "allowJavaScriptFromAppleEvents", "cliControl", "defaultProfileId",
-  "pageEngine", "websiteEngines", "protectedVideoInWebKit",
+  "pageEngine", "websiteEngines", "protectedVideoInWebKit", "developerMode",
 ];
 
 const ALLOWED: ReadonlySet<string> = new Set(CONFIG_SETTING_KEYS);

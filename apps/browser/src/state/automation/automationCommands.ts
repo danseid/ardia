@@ -25,6 +25,7 @@ export const AUTOMATION: Readonly<Record<BrowserCommand, AutomationDecision>> = 
   setAppearance: "run",
   reload: "run",
   forceReload: "run",
+  toggleDeveloperMode: "leftOutSetting",
   toggleTabLayout: "run",
   toggleSidebar: "run",
   toggleSidebarSide: "run",

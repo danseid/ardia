@@ -7,6 +7,8 @@ export function withAlpha(color: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
+export const monoFamily = "Menlo";
+
 export const ink = { white: "#FFFFFF", black: "#000000", clear: "#00000000", neutralGrey: "#808080A6" } as const;
 
 const darkRoles = {

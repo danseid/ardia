@@ -14,6 +14,8 @@ import type { ToolbarPalette } from "../ui/toolbarColors";
 import { useShortcutHint, withShortcut } from "../../state/commands/commandShortcuts";
 import { GLYPH } from "./tokens";
 import { showReloadMenu } from "../../state/site/reloadMenu";
+import { currentSettings } from "../../state/browser/current";
+import { hardReloadsOnReload } from "../../state/site/developerMode";
 
 export const ReloadButton = memo(function ReloadButton({
   tab,
@@ -42,7 +44,7 @@ export const ReloadButton = memo(function ReloadButton({
         onFocus();
         if (loading) return void web()?.stopLoading();
         if (m.metaKey) return void newTab(tab.windowId, { url: tab.url, background: true, openerId: tab.id });
-        void withLivePage(tab.id, (page) => (m.shiftKey ? page.forceReload() : page.reload()));
+        void withLivePage(tab.id, (page) => (m.shiftKey || hardReloadsOnReload(currentSettings(), tab.url) ? page.forceReload() : page.reload()));
       }}
       onContextMenu={() => {
         onFocus();

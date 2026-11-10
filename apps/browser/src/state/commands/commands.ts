@@ -61,6 +61,8 @@ import { peekTabId } from "../peek/peek";
 import { expectFocus, findFocus } from "../focus/focusClaims";
 import { isWebPageUrl } from "../../lib/url";
 import { findStep, openFind } from "../find/actions";
+import { hardReloadsOnReload } from "../site/developerMode";
+import { toggleDeveloperMode } from "../site/developerModeActions";
 
 const newOrId = (arg: string) => (arg === "new" ? null : arg);
 
@@ -206,7 +208,9 @@ export function runCommand({ command, arg, windowId: requested }: CommandEvent, 
     case "findPrevious":
       return page ? findStep(page.id, command === "findPrevious") : undefined;
     case "reload":
-      return void (tabId && withLivePage(tabId, (page) => page.reload()));
+      return void (tabId && withLivePage(tabId, (live) => (page && hardReloadsOnReload(s.settings, page.url) ? live.forceReload() : live.reload())));
+    case "toggleDeveloperMode":
+      return page ? toggleDeveloperMode(page.id) : undefined;
     case "forceReload":
       return void (tabId && withLivePage(tabId, (page) => page.forceReload()));
     case "toggleTabLayout":

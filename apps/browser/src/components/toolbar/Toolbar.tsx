@@ -34,6 +34,9 @@ import { HistoryButton, ReloadButton } from "./NavButtons";
 import { ProgressBar, TabProgressBar } from "./ProgressBar";
 import { TOOLBAR_MOTION } from "./tokens";
 import { useToolbarRow } from "./useToolbarRow";
+import { useDeveloperModeOn } from "../../state/site/hooks";
+import { DevToolbarField } from "./DevToolbar";
+import { DevStripes } from "./HazardStripes";
 
 type ToolbarTab = Pick<Tab, "id" | "url" | "title" | "windowId" | "zoom">;
 const toolbarTab = (t: Tab | undefined): ToolbarTab | undefined =>
@@ -77,6 +80,7 @@ export function Toolbar({
   const isLoading = useTabLive(tabId, (l) => l.isLoading);
   const palette = useSitePalette(tabId);
   const band = useEasedColor(bare ? null : palette.background);
+  const developerMode = useDeveloperModeOn(tabId);
   const history = useHistoryAvailability(tabId);
   const row = useToolbarRow();
   const extensionsWidth = useToolbarExtensionsWidth(windowId, Infinity);
@@ -105,6 +109,7 @@ export function Toolbar({
   return (
     <View style={{ height: row.height }}>
       {!bare && <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: band }]} />}
+      {!bare && <DevStripes tabId={tabId} />}
       <WindowDragRegion style={StyleSheet.absoluteFill} />
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: dim }]} pointerEvents="box-none">
         {geometry.sidebarButton !== null && (
@@ -121,7 +126,9 @@ export function Toolbar({
         <HistoryButton place={at.forward} tabId={tab.id} windowId={tab.windowId} direction={1} disabled={!history.forward} palette={palette} onFocus={focus} />
         <ReloadButton place={at.reload} tab={tab} loading={isLoading} palette={palette} onFocus={focus} />
         <ToolbarExtensions tabId={tab.id} windowId={windowId} palette={palette} top={row.center - row.extensionButton / 2} right={inSplit ? 8 + 2 * row.button : 8} />
-        {tab.url ? (
+        {tab.url && developerMode ? (
+          <ToolbarDevField tab={tab} palette={palette} windowId={windowId} onFocus={focus} style={urlStyle} />
+        ) : tab.url ? (
           <ToolbarUrlField tab={tab} palette={palette} windowId={windowId} inSplit={inSplit} onFocus={focus} style={urlStyle} />
         ) : null}
         {inSplit && (
@@ -148,6 +155,7 @@ export function ToolbarBackdrop({ tabId }: { tabId: string }) {
   return (
     <View pointerEvents="none" style={{ height: row.height }}>
       <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: band }]} />
+      <DevStripes tabId={tabId} />
       {url ? <Divider color={palette.divider} style={BOTTOM_LINE} /> : null}
     </View>
   );
@@ -228,6 +236,35 @@ export const ToolbarUrlField = memo(function ToolbarUrlField({ tab, palette, win
       </FieldButtons>
     </View>
   );
+});
+
+const ToolbarDevField = memo(function ToolbarDevField({ tab, palette, windowId, onFocus, style }: UrlFieldProps & { style: ViewStyle }) {
+  const theme = useTheme();
+  const row = useToolbarRow();
+  const { insecure, popover, toggleSiteControls } = useUrlField(tab, windowId, onFocus);
+  const lock = insecure ? (
+    <Pressable onPress={toggleSiteControls} style={{ paddingLeft: LOCK.left }} tooltip="Connection is not secure">
+      <Symbol
+        name="lock.open.trianglebadge.exclamationmark.fill"
+        size={12}
+        color={insecure === "certificateError" ? theme.destructive : palette.secondary}
+        style={{ width: LOCK.width, height: row.field }}
+      />
+    </Pressable>
+  ) : null;
+  const buttons = (
+    <FieldButtons
+      tab={tab}
+      palette={palette}
+      onFocus={onFocus}
+      popover={popover}
+      toggleSiteControls={toggleSiteControls}
+      accessory={<Button variant="icon" toolbar palette={palette} icon="slider.horizontal.3" look="field" onPress={toggleSiteControls} active={popover === "siteControls"} tooltip="Site Controls" />}
+    >
+      {null}
+    </FieldButtons>
+  );
+  return <DevToolbarField tabId={tab.id} palette={palette} style={style} onFocus={onFocus} leading={lock} trailing={buttons} onContextMenu={() => void showUrlBarMenu(tab)} />;
 });
 
 export const SidebarUrlField = memo(function SidebarUrlField({ tab, palette, windowId, onFocus, height, progress, accessory }: UrlFieldProps & { height: number; progress: number | null; accessory: ReactNode }) {

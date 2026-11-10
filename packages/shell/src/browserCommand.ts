@@ -19,6 +19,7 @@ export type BrowserCommand =
   | "setAppearance"
   | "reload"
   | "forceReload"
+  | "toggleDeveloperMode"
   | "toggleTabLayout"
   | "toggleSidebarSide"
   | "toggleSidebar"

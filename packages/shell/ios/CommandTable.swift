@@ -22,6 +22,7 @@ enum CommandTable {
     case setAppearance
     case reload
     case forceReload
+    case toggleDeveloperMode
     case toggleTabLayout
     case toggleSidebarSide
     case toggleSidebar
@@ -133,6 +134,7 @@ enum CommandTable {
     "setAppearance:dark": "Dark",
     "reload": "Refresh",
     "forceReload": "Force Refresh the Page",
+    "toggleDeveloperMode": "Toggle Developer Mode for This Site",
     "toggleTabLayout": "Show Tabs in Sidebar",
     "toggleSidebarSide": "Sidebar on Right",
     "toggleSidebar": "Auto-Hide Tabs",

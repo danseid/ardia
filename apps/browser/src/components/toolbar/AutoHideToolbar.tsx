@@ -13,6 +13,7 @@ import { curve } from "../ui/motion";
 import { reduceMotion, space, Text } from "../ui";
 import { TOOLBAR_MOTION } from "./tokens";
 import { motionStep, tallPage, type MotionValue, type TallPage } from "./toolbarMotion";
+import { DevStripes } from "./HazardStripes";
 import { useToolbarRow } from "./useToolbarRow";
 
 const HIDE_MS = TOOLBAR_MOTION.hide;
@@ -134,6 +135,7 @@ export function AutoHideBackdrop({ tabId, mode, motion }: { tabId: string; mode:
         bandScale: bar.interpolate({ inputRange: [0, 1], outputRange: [1, STRIP_HEIGHT / H] }),
         bandLift: bar.interpolate({ inputRange: [0, 1], outputRange: [0, -(H - STRIP_HEIGHT) / 2] }),
         dividerTop: bar.interpolate({ inputRange: [0, 1], outputRange: [0, -(H - STRIP_HEIGHT)] }),
+        stripes: bar.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
       },
     [moved, bar, H],
   );
@@ -143,6 +145,9 @@ export function AutoHideBackdrop({ tabId, mode, motion }: { tabId: string; mode:
         style={{ position: "absolute", left: 0, right: 0, top: 0, height: H, backgroundColor: theme.card, transform: anim ? [{ translateY: anim.bandLift }, { scaleY: anim.bandScale }] : undefined }}
       >
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: band }]} />
+      </Animated.View>
+      <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity: anim ? anim.stripes : 1 }]}>
+        <DevStripes tabId={tabId} />
       </Animated.View>
       {url ? (
         <Animated.View

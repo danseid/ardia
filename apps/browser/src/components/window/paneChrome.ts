@@ -22,3 +22,6 @@ export function paneBar(chrome: CardChrome, pane: { visible: boolean; fullscreen
   if (!pane.visible) return { kind: "spacer" };
   return { kind: chrome.kind === "pane" ? "toolbar" : "backdrop" };
 }
+
+export const paneDevBar = (chrome: CardChrome, pane: { small: boolean; fullscreen: boolean; developerMode: boolean }): boolean =>
+  pane.developerMode && chrome.kind === "none" && !pane.small && !pane.fullscreen;

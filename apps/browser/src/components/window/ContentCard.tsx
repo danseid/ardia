@@ -23,7 +23,8 @@ import "../dev/devExpose";
 import { PeekOverlay } from "../peek/PeekOverlay";
 import { dismissPeek, startPeeks } from "../../state/peek/actions";
 import { usePaneLayout } from "./usePaneLayout";
-import { cardChrome } from "./paneChrome";
+import { cardChrome, paneDevBar } from "./paneChrome";
+import { useDeveloperModeOn } from "../../state/site/hooks";
 import { TabPane } from "./TabPane";
 import { BesidePeekPopovers, PeekPage } from "./PageOverlays";
 import { splitTabIdsOf } from "../../state/splits/splits";
@@ -67,6 +68,7 @@ export function ContentCard() {
     return toolbarGeometry({ sidebarButton: leading && showSidebarButton });
   };
 
+  const devBar = paneDevBar(chrome, { small, fullscreen: !!fullscreenTab, developerMode: useDeveloperModeOn(activeId ?? "") });
   const focusedRect = activeId ? panes[activeId] : undefined;
   useEffect(() => {
     if (!origin || !focusedRect || chrome.kind === "none") return;
@@ -148,7 +150,7 @@ export function ContentCard() {
         <WindowToolbar windowId={windowId} tabId={activeId} geometry={geometryFor(panes[activeId])} autoHide={chrome.autoHide} />
       )}
       {size.width > 0 && !split && !fullscreenTab && (
-        <FrozenPage windowId={windowId} tabId={activeId} top={(chrome.kind !== "none" && !chrome.autoHide ? toolbarRow.height : 0) + (barMode === "always" && !small && !hideWhileScrolling ? barHeight : 0)} />
+        <FrozenPage windowId={windowId} tabId={activeId} top={((chrome.kind !== "none" && !chrome.autoHide) || devBar ? toolbarRow.height : 0) + (barMode === "always" && !small && !hideWhileScrolling ? barHeight : 0)} />
       )}
       {split && !fullscreenTab && <SplitDividers split={split} dividers={dividers} width={size.width} height={size.height} />}
       {size.width > 0 && popoversOverCard && origin && activeRect && peek !== undefined && (

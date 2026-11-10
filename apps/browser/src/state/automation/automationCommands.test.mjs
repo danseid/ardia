@@ -18,6 +18,8 @@ test("a command whose setting config files leave out is never automatable", () =
     if (setting && !isConfigSettingKey(setting)) assert.notEqual(automationDecision(id), "run", id);
   }
   assert.equal(automationDecision("toggleJavaScriptFromAppleEvents"), "leftOutSetting");
+  assert.ok(!isConfigSettingKey("developerMode"));
+  assert.equal(automationDecision("toggleDeveloperMode"), "leftOutSetting");
 });
 
 test("commands that set a setting in runCommand's own cases touch only allowlisted settings", () => {
@@ -35,7 +37,7 @@ test("the engine switch and commands needing a free argument are refused", () =>
 test("commands lists exactly the automatable commands, with titles and variants", () => {
   const listed = automationCommands();
   assert.deepEqual(listed.map((c) => c.id), ids.filter(isAutomatable));
-  assert.ok(!listed.some((c) => c.id === "togglePageEngine" || c.id === "toggleJavaScriptFromAppleEvents"));
+  assert.ok(!listed.some((c) => c.id === "togglePageEngine" || c.id === "toggleJavaScriptFromAppleEvents" || c.id === "toggleDeveloperMode"));
   for (const c of listed) assert.ok(typeof c.title === "string" && c.title.length > 0, c.id);
   assert.deepEqual(listed.find((c) => c.id === "setAppearance").variants, ["auto", "light", "dark"]);
   assert.equal(listed.find((c) => c.id === "newTab").variants, null);

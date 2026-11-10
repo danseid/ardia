@@ -19,13 +19,13 @@ Legend: **✅** done · **🧪** built, but the deciding test needs the user pre
 
 ## Summary
 
-**307 feature rows** (§1–§25, recounted from the tables on 2026-09-26):
+**308 feature rows** (§1–§25, recounted from the tables on 2026-11-10):
 
 | ✅ done | 🧪 needs the user | 🟡 partial | ❌ missing | ⛔ blocked | ⏸ deferred (AI) | — n/a |
 |---|---|---|---|---|---|---|
-| 230 | 1 | 2 | 0 | 1 | 59 | 14 |
+| 231 | 1 | 2 | 0 | 1 | 59 | 14 |
 
-Of the 234 rows that count (not ⏸ or —), 230 are done (98 %), 231 with the one 🧪 row (Cast). The two 🟡 rows are
+Of the 235 rows that count (not ⏸ or —), 231 are done (98 %), 232 with the one 🧪 row (Cast). The two 🟡 rows are
 passkeys (iCloud Keychain waits on Apple) and the Dia sidebar import (profiles, open and pinned tabs come through
 Dia's AppleScript; custom names, colours, spaces and folders don't). Keyboard shortcuts: every Dia and Chrome
 shortcut is bound (Dia's where they clash) except Chat (⏸) and a few for Chrome's own hidden UI. Menus: all ten exist and match.
@@ -643,6 +643,7 @@ Chrome's password manager and autofill fill pages themselves; our Settings panes
 ## 23. Developer & scripting
 | Feature | Dia | Ardia | Gap |
 |---|---|---|---|
+| Developer Mode per site (Arc; Dia has none) | — | ✅ | Arc-style striped bar on development hosts (mantrakp04/ardia#292, #1079). On by default for `localhost`, `127.0.0.0/8`, `[::1]`, `*.localhost`, `*.test`, `*.local` and a private IPv4 (`10.`, `172.16–31.`, `192.168.`) with an explicit port; Site Controls › More › Developer Mode (or "Toggle Developer Mode for This Site" in the command bar) turns it on or off for any host, kept per host without the port in `settings.developerMode` (`enabledHosts`, `disabledDefaultHosts`, `hardReloadHosts`; synced; a private window shows the bar on default hosts but never saves a host). The toolbar gets faint 45° stripes in the space colour, and its address field becomes the full URL (scheme, port) in Menlo, editable in place (click, Enter goes, Escape or blur cancels), a `local` / `staging` / `prod` badge, and buttons for Copy URL, Hard Reload, Developer Tools, JavaScript Console and Inspect Elements, all running the menu commands. With the address bar in the sidebar the bar is a row at the top of each pane. Site Controls › "Always Hard Reload" makes ⌘R and the reload button hard-reload on that host. Badges come from `settings.developerModeEnvironments` in config.json (`docs/config.md`). No Network button (Chrome has no command for that panel). No telemetry (private fork build) |
 | DevTools ⌥⌘I / F12 | ✓ | ✅ | Docked on the right by default (Chrome's dock-side menu, remembered per profile), device toolbar (⇧⌘M in DevTools) docked and undocked. ⌥⌘I, context-menu Inspect; F12 is Chrome's DevTools toggle (opens them, closes docked ones, and closes the undocked window it's pressed in). The undocked window is titled like Dia's, "Developer Tools - <url>", and opens where the profile's DevTools window was last left (Chrome's own record, 640 × 640 the first time); View › Developer › View Source ⌥⌘U (`view-source:` tab), Inspect Elements ⌥⌘C and JavaScript Console ⌥⌘J, run as Chrome's own commands (⌥⌘I / ⌥⌘J close docked DevTools) |
 | Task Manager | ✓ | ✅ | Chrome's own Task Manager window, as Dia's (its Window menu item opens "the chrome task manager"): Window › Task Manager → `ac_task_manager_open` → `chrome::OpenTaskManager` with the last active Browser, so its tab is selected; tabs & extensions / browser / all tasks, search, End Task. A top-level window: it outlives the window that opened it and opens with none |
 | AppleScript dictionary (windows, tabs, profiles, execute JS) | ✓ | ✅ | Ardia.sdef; execute runs through the renderer's `ac-eval`, which works on Chrome tabs. Like Chrome and Dia, `execute` is off until View › Developer › Allow JavaScript from Apple Events is checked (`settings.allowJavaScriptFromAppleEvents`, default off; one switch for every profile, where Chrome's and Dia's pref is per profile); until then it fails with Chrome's error 12, "Executing JavaScript through AppleScript is turned off…" |

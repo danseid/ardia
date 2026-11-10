@@ -39,7 +39,8 @@ Ardia never creates the folder. `ardia config init` does, or the user does.
   left out, so a new setting never becomes file-writable by accident. Left out, because they grant control, send
   data somewhere or change which engine handles a site: `cliControl`, `allowJavaScriptFromAppleEvents`,
   `extensionSearchEngines`, `defaultProfileId`, `customSearchUrl`, `customSearchEngines`, `pageEngine`,
-  `websiteEngines`, `protectedVideoInWebKit`. `searchEngine` must name an engine that already exists (built in, or
+  `websiteEngines`, `protectedVideoInWebKit`, `developerMode` (the per-site switches: the "Toggle Developer Mode for
+  This Site" command and Site Controls change it, and automation refuses that command). `searchEngine` must name an engine that already exists (built in, or
   one the user added in Settings).
 - `shortcuts` maps a command id from the command catalog to one shortcut, written `cmd+shift+t` (modifiers
   `cmd`/`command`, `opt`/`option`/`alt`, `ctrl`/`control`, `shift`, `fn`, then one key: a character, `f1`–`f20`,
@@ -59,6 +60,23 @@ Ardia never creates the folder. `ardia config init` does, or the user does.
 - `theme` is a theme name (`^[a-z0-9][a-z0-9_-]*$`, the file `themes/<name>.json`) or `null`. A bad value, or a
   `config.json` that doesn't parse, keeps the theme that is showing.
 - Unknown keys inside `settings` are reported and ignored. Other top-level keys are ignored.
+
+### Developer Mode environment badges
+
+`settings.developerModeEnvironments` names the sites that get a badge in the Developer Mode bar. Each key is the badge
+text (shown lowercase, up to 12 characters) and its value lists host patterns: an exact host (`example.com`),
+`*.example.com` (any subdomain, not `example.com` itself), each with an optional `:port` (`localhost:3000`). Matching
+ignores case and the first label that matches wins, in the order written. A development host that matches no pattern
+shows `local`; any other site shows no badge. `local` is green, `staging` orange, `prod` and `production` red, the
+rest grey. The setting isn't synced.
+
+A development host is `localhost`, `127.0.0.0/8`, `[::1]`, `*.localhost`, `*.test`, `*.local` (a trailing dot is ignored), or
+a private IPv4 address (`10.`, `172.16–31.`, `192.168.`) with an explicit port. An explicit port means a non-default
+one: Chrome drops `:80` and `:443` from an address, so `http://192.168.1.5:80` counts as having none.
+
+```json
+{ "settings": { "developerModeEnvironments": { "staging": ["*.staging.example.com"], "prod": ["example.com", "www.example.com"] } } }
+```
 
 ### Address bar providers
 
